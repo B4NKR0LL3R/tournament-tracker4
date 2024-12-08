@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Tournament</title>
+</head>
+<body>
+    <h1>Add New Tournament</h1>
+    <form method="post">
+        Tournament Name: <input type="text" name="tournament_name" required><br>
+        Buy-In: <input type="number" step="0.01" name="buy_in" required><br>
+        Prize: <input type="number" step="0.01" name="prize" required><br>
+        Site: 
+        <select name="site" required>
+            {% for site in sites %}
+            <option value="{{ site }}">{{ site }}</option>
+            {% endfor %}
+        </select><br>
+        Type: 
+        <select name="type" required>
+            <option value="MTT">MTT</option>
+            <option value="Spin">Spin</option>
+        </select><br>
+        <button type="submit">Add Tournament</button>
+    </form>
+    <a href="/">Back to Dashboard</a>
+</body>
+</html>
