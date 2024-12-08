@@ -3,17 +3,48 @@
 <html>
 <head>
     <title>Statistics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .chart-container { width: 80%; margin: 20px auto; }
+        canvas { max-width: 100%; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Statistics</h1>
     <ul>
         <li><strong>Total Tournaments:</strong> {{ total_tournaments }}</li>
         <li><strong>Total Profit:</strong> €{{ total_profit }}</li>
-        <li><strong>Average Buy-In:</strong> €{{ avg_buy_in }}</li>
         <li><strong>ROI:</strong> {{ roi }}%</li>
-        <li><strong>MTTs Played:</strong> {{ mtt_count }}</li>
-        <li><strong>Spins Played:</strong> {{ spin_count }}</li>
+        <li><strong>MTT Profit:</strong> €{{ mtt_profit }}</li>
+        <li><strong>Spin Profit:</strong> €{{ spin_profit }}</li>
     </ul>
+    <div class="chart-container">
+        <canvas id="profitChart"></canvas>
+    </div>
+    <script>
+        const profitChartCtx = document.getElementById('profitChart').getContext('2d');
+        new Chart(profitChartCtx, {
+            type: 'line',
+            data: {
+                labels: {{ time_labels|tojson }},
+                datasets: [
+                    {
+                        label: 'MTT Profit',
+                        data: {{ mtt_profit_data|tojson }},
+                        borderColor: 'blue',
+                        fill: false
+                    },
+                    {
+                        label: 'Spin Profit',
+                        data: {{ spin_profit_data|tojson }},
+                        borderColor: 'red',
+                        fill: false
+                    }
+                ]
+            }
+        });
+    </script>
     <a href="/">Back to Dashboard</a>
 </body>
 </html>
