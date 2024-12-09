@@ -14,6 +14,23 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+@app.before_first_request
+def initialize_database():
+    conn = get_db_connection()
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS tournaments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            buy_in REAL NOT NULL,
+            prize REAL NOT NULL,
+            site TEXT NOT NULL,
+            type TEXT NOT NULL,
+            date TEXT DEFAULT CURRENT_DATE
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -67,7 +84,7 @@ def statistics():
             total_profit += tournament['prize'] - tournament['buy_in']
             total_buy_in += tournament['buy_in']
             itm_count += 1 if tournament['prize'] > 0 else 0
-            time_labels.append(tournament['date'] if 'date' in tournament.keys() else "")
+            time_labels.append(tournament['date'])
             if tournament['type'] == 'MTT':
                 mtt_profit += tournament['prize'] - tournament['buy_in']
                 mtt_count += 1
