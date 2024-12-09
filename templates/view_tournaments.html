@@ -3,38 +3,11 @@
 <html>
 <head>
     <title>All Tournaments</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f4f4f4; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
-        a { color: #007bff; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
 </head>
 <body>
     <h1>All Tournaments</h1>
-    <form method="get" action="/view-tournaments">
-        <label for="type">Filter by Type:</label>
-        <select name="type" id="type">
-            <option value="">All</option>
-            <option value="MTT">MTT</option>
-            <option value="Spin">Spin</option>
-        </select>
-        <label for="site">Filter by Site:</label>
-        <select name="site" id="site">
-            <option value="">All</option>
-            <option value="PokerStars">PokerStars</option>
-            <option value="888Poker">888Poker</option>
-            <option value="ACR">ACR</option>
-            <!-- Add more sites as needed -->
-        </select>
-        <button type="submit">Apply Filters</button>
-    </form>
     {% if tournaments %}
-    <table>
+    <table border="1">
         <tr>
             <th>ID</th>
             <th>Name</th>
@@ -42,7 +15,6 @@
             <th>Prize</th>
             <th>Site</th>
             <th>Type</th>
-            <th>Date Played</th>
         </tr>
         {% for tournament in tournaments %}
         <tr>
@@ -52,7 +24,6 @@
             <td>{{ tournament.prize }}</td>
             <td>{{ tournament.site }}</td>
             <td>{{ tournament.type }}</td>
-            <td>{{ tournament.date_played }}</td>
         </tr>
         {% endfor %}
     </table>
