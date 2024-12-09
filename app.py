@@ -42,8 +42,8 @@ def index():
         conn.close()
         total_tournaments = len(tournaments)
         total_profit = sum(t['prize'] - t['buy_in'] for t in tournaments)
-        roi = (total_profit / sum(t['buy_in'] for t in tournaments)) * 100 if total_tournaments > 0 else 0
-        return render_template('index.html', total_tournaments=total_tournaments, total_profit=total_profit, roi=roi)
+        roi = round((total_profit / sum(t['buy_in'] for t in tournaments)) * 100, 2) if total_tournaments > 0 else 0
+        return render_template('index.html', total_tournaments=total_tournaments, total_profit=round(total_profit, 2), roi=roi)
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -132,32 +132,33 @@ def statistics():
     total_buy_in = sum(t['buy_in'] for t in tournaments) if total_tournaments > 0 else 0
     total_prize = sum(t['prize'] for t in tournaments) if total_tournaments > 0 else 0
     total_profit = total_prize - total_buy_in
-    roi = (total_profit / total_buy_in) * 100 if total_buy_in > 0 else 0
+    roi = round((total_profit / total_buy_in) * 100, 2) if total_buy_in > 0 else 0
+    itm_count = sum(1 for t in tournaments if t['prize'] > t['buy_in'])
+    itm_percentage = round((itm_count / total_tournaments) * 100, 2) if total_tournaments > 0 else 0
+    avg_buy_in = round(total_buy_in / total_tournaments, 2) if total_tournaments > 0 else 0
 
     # Filter MTTs and Spins
     mtt_tournaments = [t for t in tournaments if t['type'] == 'MTT']
     spin_tournaments = [t for t in tournaments if t['type'] == 'Spin']
 
-    # MTT Statistics
-    mtt_profit = sum(t['prize'] - t['buy_in'] for t in mtt_tournaments) if mtt_tournaments else 0
-    mtt_profit_data = [t['prize'] - t['buy_in'] for t in mtt_tournaments]
-    mtt_time_labels = [t['date_played'] for t in mtt_tournaments]
-
-    # Spin Statistics
-    spin_profit = sum(t['prize'] - t['buy_in'] for t in spin_tournaments) if spin_tournaments else 0
-    spin_profit_data = [t['prize'] - t['buy_in'] for t in spin_tournaments]
-    spin_time_labels = [t['date_played'] for t in spin_tournaments]
+    mtt_profit = round(sum(t['prize'] - t['buy_in'] for t in mtt_tournaments), 2) if mtt_tournaments else 0
+    mtt_roi = round((mtt_profit / sum(t['buy_in'] for t in mtt_tournaments)) * 100, 2) if mtt_tournaments else 0
+    spin_profit = round(sum(t['prize'] - t['buy_in'] for t in spin_tournaments), 2) if spin_tournaments else 0
+    spin_roi = round((spin_profit / sum(t['buy_in'] for t in spin_tournaments)) * 100, 2) if spin_tournaments else 0
 
     return render_template(
         'statistics.html',
         total_tournaments=total_tournaments,
-        total_profit=total_profit,
+        total_profit=round(total_profit, 2),
         roi=roi,
+        itm_percentage=itm_percentage,
+        avg_buy_in=avg_buy_in,
+        mtt_tournaments=len(mtt_tournaments),
         mtt_profit=mtt_profit,
+        mtt_roi=mtt_roi,
+        spin_tournaments=len(spin_tournaments),
         spin_profit=spin_profit,
-        time_labels=mtt_time_labels + spin_time_labels,
-        mtt_profit_data=mtt_profit_data,
-        spin_profit_data=spin_profit_data
+        spin_roi=spin_roi
     )
 
 @app.route('/export')
