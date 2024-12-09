@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .links {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+        .links li {
+            margin-bottom: 10px;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Tournament Tracker</h1>
+        <ul class="links">
+            <li><a href="/view-tournaments">View All Tournaments</a></li>
+            <li><a href="/add-tournament">Add New Tournament</a></li>
+            <li><a href="/statistics">View Statistics</a></li>
+        </ul>
+        <h2>Quick Stats</h2>
+        <ul>
+            <li><strong>Total Tournaments:</strong> {{ total_tournaments }}</li>
+            <li><strong>Total Profit:</strong> €{{ total_profit }}</li>
+            <li><strong>ROI:</strong> {{ roi }}%</li>
+        </ul>
+        <h3>Recent Tournaments</h3>
+        <ul>
+            {% if recent_tournaments %}
+                {% for tournament in recent_tournaments %}
+                    <li>{{ tournament['name'] }} - Buy-In: €{{ tournament['buy_in'] }}, Prize: €{{ tournament['prize'] }}</li>
+                {% endfor %}
+            {% else %}
+                <p>No tournaments added yet!</p>
+            {% endif %}
+        </ul>
+    </div>
+</body>
+</html>
