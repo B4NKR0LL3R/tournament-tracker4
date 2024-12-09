@@ -1,39 +1,42 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Tournament</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        form { margin-top: 20px; }
-        input, select, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 300px; }
-        label { font-weight: bold; }
-    </style>
 </head>
 <body>
     <h1>Add New Tournament</h1>
     <form method="post">
-        <label for="tournament_name">Tournament Name:</label>
-        <input type="text" name="tournament_name" id="tournament_name" required>
+        <label for="name">Tournament Name:</label>
+        <input type="text" id="name" name="name" required>
+        
         <label for="buy_in">Buy-In:</label>
-        <input type="number" step="0.01" name="buy_in" id="buy_in" required>
+        <input type="number" step="0.01" id="buy_in" name="buy_in" required>
+        
         <label for="prize">Prize:</label>
-        <input type="number" step="0.01" name="prize" id="prize" required>
+        <input type="number" step="0.01" id="prize" name="prize" required>
+        
         <label for="site">Site:</label>
-        <select name="site" id="site" required>
+        <select id="site" name="site" required>
+            <option value="" disabled selected>-- Select Site --</option>
             {% for site in sites %}
-            <option value="{{ site }}">{{ site }}</option>
+                <option value="{{ site }}">{{ site }}</option>
             {% endfor %}
         </select>
+        
         <label for="type">Type:</label>
-        <select name="type" id="type" required>
+        <select id="type" name="type" required>
             <option value="MTT">MTT</option>
             <option value="Spin">Spin</option>
         </select>
+        
         <label for="date_played">Date Played:</label>
-        <input type="date" name="date_played" id="date_played" required>
+        <input type="date" id="date_played" name="date_played" required>
+        
         <button type="submit">Add Tournament</button>
     </form>
-    <a href="/">Back to Dashboard</a>
+    <a href="/dashboard">Back to Dashboard</a>
 </body>
 </html>
