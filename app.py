@@ -14,22 +14,28 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.before_first_request
+# Use this to ensure the table is created only once
+initialized = False
+
+@app.before_request
 def initialize_database():
-    conn = get_db_connection()
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS tournaments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            buy_in REAL NOT NULL,
-            prize REAL NOT NULL,
-            site TEXT NOT NULL,
-            type TEXT NOT NULL,
-            date TEXT DEFAULT CURRENT_DATE
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    global initialized
+    if not initialized:
+        conn = get_db_connection()
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS tournaments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                buy_in REAL NOT NULL,
+                prize REAL NOT NULL,
+                site TEXT NOT NULL,
+                type TEXT NOT NULL,
+                date TEXT DEFAULT CURRENT_DATE
+            )
+        ''')
+        conn.commit()
+        conn.close()
+        initialized = True
 
 @app.route('/')
 def index():
