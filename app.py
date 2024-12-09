@@ -126,20 +126,39 @@ def statistics():
     conn = get_db_connection()
     tournaments = conn.execute('SELECT * FROM tournaments').fetchall()
     conn.close()
+
+    # Initialize default values
     total_tournaments = len(tournaments)
-    total_buy_in = sum(t['buy_in'] for t in tournaments)
-    total_prize = sum(t['prize'] for t in tournaments)
+    total_buy_in = sum(t['buy_in'] for t in tournaments) if total_tournaments > 0 else 0
+    total_prize = sum(t['prize'] for t in tournaments) if total_tournaments > 0 else 0
     total_profit = total_prize - total_buy_in
     roi = (total_profit / total_buy_in) * 100 if total_buy_in > 0 else 0
 
+    # Filter MTTs and Spins
     mtt_tournaments = [t for t in tournaments if t['type'] == 'MTT']
     spin_tournaments = [t for t in tournaments if t['type'] == 'Spin']
 
-    mtt_profit = sum(t['prize'] - t['buy_in'] for t in mtt_tournaments)
-    spin_profit = sum(t['prize'] - t['buy_in'] for t in spin_tournaments)
+    # MTT Statistics
+    mtt_profit = sum(t['prize'] - t['buy_in'] for t in mtt_tournaments) if mtt_tournaments else 0
+    mtt_profit_data = [t['prize'] - t['buy_in'] for t in mtt_tournaments]
+    mtt_time_labels = [t['date_played'] for t in mtt_tournaments]
 
-    return render_template('statistics.html', total_tournaments=total_tournaments, total_profit=total_profit, roi=roi,
-                           mtt_profit=mtt_profit, spin_profit=spin_profit)
+    # Spin Statistics
+    spin_profit = sum(t['prize'] - t['buy_in'] for t in spin_tournaments) if spin_tournaments else 0
+    spin_profit_data = [t['prize'] - t['buy_in'] for t in spin_tournaments]
+    spin_time_labels = [t['date_played'] for t in spin_tournaments]
+
+    return render_template(
+        'statistics.html',
+        total_tournaments=total_tournaments,
+        total_profit=total_profit,
+        roi=roi,
+        mtt_profit=mtt_profit,
+        spin_profit=spin_profit,
+        time_labels=mtt_time_labels + spin_time_labels,
+        mtt_profit_data=mtt_profit_data,
+        spin_profit_data=spin_profit_data
+    )
 
 @app.route('/export')
 def export():
